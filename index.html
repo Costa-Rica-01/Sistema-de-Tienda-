@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SISTEMA COMERCIAL 16</title>
+  <link rel="stylesheet" href="Estilo.css">
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <div class="brand-mark">Er<span>16</span></div>
+      <div class="brand-text"><h1>SISTEMA COMERCIAL 16</h1><p>CONTROL DE TIENDA · PULPERÍA · ABASTECEDOR · ALMACÉN</p></div>
+      <div class="clock-box"><span>FECHA DEL SISTEMA</span><strong id="today"></strong><small>VERSIÓN 1.0 · LOCAL</small></div>
+    </header>
+
+    <nav class="main-nav" aria-label="Secciones">
+      <button class="nav-btn active" data-page="dashboard">INICIO</button>
+      <button class="nav-btn" data-page="sales">VENTAS</button>
+      <button class="nav-btn" data-page="products">INVENTARIO</button>
+      <button class="nav-btn" data-page="expenses">GASTOS</button>
+      <button class="nav-btn" data-page="reports">CONTABILIDAD</button>
+      <button class="nav-btn" data-page="backup">ARCHIVOS</button>
+    </nav>
+
+    <main>
+      <section id="dashboard" class="page active">
+        <div class="section-title"><span>■</span> PANEL GENERAL <small>RESUMEN DEL NEGOCIO</small></div>
+        <div class="welcome-panel">BIENVENIDO AL SISTEMA COMERCIAL 91 <span>///</span> ADMINISTRACIÓN Y CONTROL DE NEGOCIO</div>
+        <div class="stats-grid">
+          <article class="stat-card"><label>VENTAS DE HOY</label><strong id="statToday">₡0</strong><small id="countToday">0 transacciones</small></article>
+          <article class="stat-card"><label>VENTAS DEL MES</label><strong id="statMonth">₡0</strong><small>Ingresos registrados</small></article>
+          <article class="stat-card"><label>VALOR DEL INVENTARIO</label><strong id="statStock">₡0</strong><small>Al costo de compra</small></article>
+          <article class="stat-card warning"><label>PRODUCTOS POR AGOTARSE</label><strong id="statLow">0</strong><small>Revisar existencias</small></article>
+        </div>
+        <div class="two-col">
+          <div class="panel"><div class="panel-heading">ÚLTIMAS VENTAS</div><div class="table-wrap"><table><thead><tr><th>FECHA</th><th>FACTURA</th><th>TOTAL</th></tr></thead><tbody id="recentSales"></tbody></table></div></div>
+          <div class="panel"><div class="panel-heading">ALERTAS DE INVENTARIO</div><div id="lowList" class="alert-list"></div></div>
+        </div>
+        <p class="note">NOTA: Los datos se guardan en este navegador mediante almacenamiento local. Realice copias de seguridad periódicas desde ARCHIVOS.</p>
+      </section>
+
+      <section id="sales" class="page">
+        <div class="section-title"><span>■</span> TERMINAL DE VENTAS <small>REGISTRO DE COMPRAS</small></div>
+        <div class="sales-layout">
+          <div class="panel">
+            <div class="panel-heading">AGREGAR PRODUCTOS A LA FACTURA</div>
+            <div class="form-row"><label for="saleSearch">BUSCAR PRODUCTO</label><input id="saleSearch" placeholder="Código o nombre del producto..."></div>
+            <div class="table-wrap product-picker"><table><thead><tr><th>CÓDIGO</th><th>PRODUCTO</th><th>PRECIO</th><th>STOCK</th><th></th></tr></thead><tbody id="pickerRows"></tbody></table></div>
+          </div>
+          <div class="panel">
+            <div class="panel-heading">FACTURA ACTUAL <span id="invoiceNo"></span></div>
+            <div class="cart-wrap"><table><thead><tr><th>PRODUCTO</th><th>CANT.</th><th>PRECIO</th><th>IMPORTE</th><th></th></tr></thead><tbody id="cartRows"></tbody></table></div>
+            <div class="total-box"><span>TOTAL A PAGAR</span><strong id="cartTotal">₡0</strong></div>
+            <div class="checkout-row"><label for="paymentMethod">PAGO</label><select id="paymentMethod"><option>Efectivo</option><option>Tarjeta</option><option>Sinpe Móvil</option><option>Transferencia</option><option>Crédito</option></select><button id="completeSale" class="button primary">COBRAR Y GUARDAR</button></div>
+            <button id="clearCart" class="button danger full">CANCELAR FACTURA</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="products" class="page">
+        <div class="section-title"><span>■</span> CONTROL DE INVENTARIO <small>PRODUCTOS Y EXISTENCIAS</small></div>
+        <div class="panel">
+          <div class="panel-heading">REGISTRAR / EDITAR PRODUCTO</div>
+          <form id="productForm" class="product-form">
+            <input type="hidden" id="editId">
+            <div class="form-row"><label for="pCode">CÓDIGO / SKU</label><input id="pCode" required placeholder="Ej. 1001"></div>
+            <div class="form-row"><label for="pName">NOMBRE DEL PRODUCTO</label><input id="pName" required placeholder="Ej. Arroz 1 kg"></div>
+            <div class="form-row"><label for="pCategory">CATEGORÍA</label><input id="pCategory" placeholder="Abarrotes"></div>
+            <div class="form-row"><label for="pCost">COSTO (₡)</label><input id="pCost" type="number" min="0" step="0.01" required></div>
+            <div class="form-row"><label for="pPrice">PRECIO DE VENTA (₡)</label><input id="pPrice" type="number" min="0" step="0.01" required></div>
+            <div class="form-row"><label for="pStock">CANTIDAD EN STOCK</label><input id="pStock" type="number" min="0" step="1" required></div>
+            <div class="form-row"><label for="pMin">STOCK MÍNIMO</label><input id="pMin" type="number" min="0" step="1" value="5"></div>
+            <div class="form-actions"><button class="button primary" type="submit" id="saveProduct">GUARDAR PRODUCTO</button><button class="button" type="button" id="resetProduct">LIMPIAR</button></div>
+          </form>
+        </div>
+        <div class="panel">
+          <div class="toolbar"><div class="panel-heading">LISTADO DE PRODUCTOS</div><input id="inventorySearch" placeholder="Filtrar inventario..."></div>
+          <div class="table-wrap"><table><thead><tr><th>CÓDIGO</th><th>PRODUCTO</th><th>CATEGORÍA</th><th>COSTO</th><th>PRECIO</th><th>STOCK</th><th>VALOR COSTO</th><th>ACCIONES</th></tr></thead><tbody id="inventoryRows"></tbody></table></div>
+        </div>
+      </section>
+
+      <section id="expenses" class="page">
+        <div class="section-title"><span>■</span> CONTROL DE GASTOS <small>EGRESOS DEL NEGOCIO</small></div>
+        <div class="panel">
+          <div class="panel-heading">REGISTRAR GASTO</div>
+          <form id="expenseForm" class="expense-form">
+            <div class="form-row"><label for="expenseDate">FECHA</label><input id="expenseDate" type="date" required></div>
+            <div class="form-row"><label for="expenseName">DESCRIPCIÓN</label><input id="expenseName" required placeholder="Ej. Recibo de electricidad"></div>
+            <div class="form-row"><label for="expenseCategory">CATEGORÍA</label><select id="expenseCategory"><option>Servicios</option><option>Alquiler</option><option>Transporte</option><option>Salarios</option><option>Compras</option><option>Mantenimiento</option><option>Otros</option></select></div>
+            <div class="form-row"><label for="expenseAmount">MONTO (₡)</label><input id="expenseAmount" type="number" min="0.01" step="0.01" required></div>
+            <button class="button primary" type="submit">REGISTRAR GASTO</button>
+          </form>
+        </div>
+        <div class="panel"><div class="panel-heading">HISTORIAL DE GASTOS</div><div class="table-wrap"><table><thead><tr><th>FECHA</th><th>DESCRIPCIÓN</th><th>CATEGORÍA</th><th>MONTO</th><th></th></tr></thead><tbody id="expenseRows"></tbody></table></div></div>
+      </section>
+
+      <section id="reports" class="page">
+        <div class="section-title"><span>■</span> CONTABILIDAD Y REPORTES <small>RESUMEN FINANCIERO</small></div>
+        <div class="panel report-filter"><div class="form-row"><label for="reportMonth">MES DEL REPORTE</label><input id="reportMonth" type="month"></div><button id="refreshReport" class="button primary">ACTUALIZAR REPORTE</button></div>
+        <div class="stats-grid report-stats">
+          <article class="stat-card"><label>VENTAS BRUTAS</label><strong id="rSales">₡0</strong></article>
+          <article class="stat-card"><label>COSTO DE MERCADERÍA VENDIDA</label><strong id="rCost">₡0</strong></article>
+          <article class="stat-card"><label>GANANCIA BRUTA ESTIMADA</label><strong id="rProfit">₡0</strong></article>
+          <article class="stat-card warning"><label>GASTOS REGISTRADOS</label><strong id="rExpenses">₡0</strong></article>
+        </div>
+        <div class="panel"><div class="panel-heading">RESULTADO DEL PERÍODO</div><div class="result-line"><span>Ganancia bruta estimada</span><strong id="rGross">₡0</strong></div><div class="result-line"><span>Menos gastos registrados</span><strong id="rMinus">₡0</strong></div><div class="result-line final"><span>RESULTADO ESTIMADO</span><strong id="rNet">₡0</strong></div></div>
+        <div class="panel"><div class="panel-heading">HISTORIAL DE VENTAS DEL MES</div><div class="table-wrap"><table><thead><tr><th>FECHA</th><th>FACTURA</th><th>PRODUCTOS</th><th>PAGO</th><th>VENTA</th><th>COSTO</th><th>GANANCIA</th></tr></thead><tbody id="reportSalesRows"></tbody></table></div></div>
+        <p class="note">Este reporte es un control administrativo estimado, no sustituye libros contables oficiales, declaraciones tributarias ni asesoría de un contador.</p>
+      </section>
+
+      <section id="backup" class="page">
+        <div class="section-title"><span>■</span> ARCHIVOS Y SEGURIDAD <small>RESPALDO DE INFORMACIÓN</small></div>
+        <div class="panel backup-panel"><div class="panel-heading">COPIAS DE SEGURIDAD</div><p>Descargue un archivo JSON con sus productos, ventas y gastos. Puede importarlo después para recuperar la información.</p><button id="exportData" class="button primary">DESCARGAR COPIA DE SEGURIDAD</button><hr><label class="file-label" for="importFile">RESTAURAR COPIA JSON</label><input type="file" id="importFile" accept=".json,application/json"><button id="importData" class="button">IMPORTAR ARCHIVO</button><p class="note">La importación reemplaza los datos actuales. Exporte una copia antes de restaurar.</p></div>
+        <div class="panel backup-panel"><div class="panel-heading">EXPORTAR INFORMACIÓN</div><p>Descargue los listados para abrirlos en una hoja de cálculo.</p><button id="exportProducts" class="button">EXPORTAR INVENTARIO CSV</button> <button id="exportSales" class="button">EXPORTAR VENTAS CSV</button> <button id="exportExpenses" class="button">EXPORTAR GASTOS CSV</button></div>
+        <div class="panel backup-panel"><div class="panel-heading">DATOS DEL SISTEMA</div><p><b>SISTEMA COMERCIAL 91</b> · Funciona localmente en este navegador. No requiere conexión para registrar ventas. No sincroniza entre dispositivos.</p></div>
+      </section>
+    </main>
+    <footer> SISTEMA COMERCIAL 91 © 1991–2026 <span>///</span> HECHO PARA EL CONTROL DIARIO DE SU NEGOCIO</footer>
+  </div>
+  <div id="toast" role="status" aria-live="polite"></div>
+  <script src="Sistema.js"></script>
+</body>
+</html>
